@@ -35,5 +35,28 @@
  *   // => { attempts: 5, success: false, totalWaitTime: 15 }
  */
 export function upiRetry(outcomes) {
-  // Your code here
+  if (!Array.isArray(outcomes) || outcomes.length === 0)
+    return { attempts: 0, success: false, totalWaitTime: 0 };
+
+  let totalWaitTime = 0;
+  let currentWaitTime = 0;
+  let attempts = 0;
+  let status = false;
+
+  do {
+    if (outcomes[attempts] === "success") {
+      attempts += 1;
+      status = true;
+      break;
+    } else {
+      attempts += 1;
+
+      if (attempts < 5) {
+        currentWaitTime = Math.pow(2, attempts - 1);
+        totalWaitTime += currentWaitTime;
+      }
+    }
+  } while (attempts < 5);
+
+  return { attempts, success: status, totalWaitTime };
 }
